@@ -110,6 +110,7 @@ class MiniCourt:
 
 
     def set_canvas_background_box_position(self, frame):
+        
         frame = frame.copy()
         self.end_x = frame.shape[1] - self.buffer
         self.end_y = self.buffer + self.drawing_rectangle_height
