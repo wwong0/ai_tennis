@@ -118,6 +118,7 @@ class MiniCourt:
         self.start_y = self.end_y - self.drawing_rectangle_height
 
     def draw_court(self,frame):
+        # draws kps
         for i in range(0, len(self.drawing_keypoints), 2):
             x = int(self.drawing_keypoints[i])
             y = int(self.drawing_keypoints[i + 1])
