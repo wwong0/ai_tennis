@@ -111,7 +111,6 @@ class MiniCourt:
 
     def set_canvas_background_box_position(self, frame):
         frame = frame.copy()
-        #sets white box
         self.end_x = frame.shape[1] - self.buffer
         self.end_y = self.buffer + self.drawing_rectangle_height
         self.start_x = self.end_x - self.drawing_rectangle_width
@@ -135,6 +134,7 @@ class MiniCourt:
         return frame
 
     def draw_background_rectangle(self, frame):
+
         shapes = np.zeros_like(frame,np.uint8)
         # Draw the rectangle
         cv2.rectangle(shapes, (self.start_x, self.start_y), (self.end_x, self.end_y), (255,255,255), -1)
