@@ -110,7 +110,7 @@ class MiniCourt:
 
 
     def set_canvas_background_box_position(self, frame):
-        
+
         frame = frame.copy()
         self.end_x = frame.shape[1] - self.buffer
         self.end_y = self.buffer + self.drawing_rectangle_height
@@ -130,7 +130,10 @@ class MiniCourt:
             end_point = (int(self.drawing_keypoints[line[1]*2]), int(self.drawing_keypoints[line[1]*2+1]))
             cv2.line(frame, start_point, end_point, (0, 0, 0), 2)
 
-
+        #draw net
+        net_start_point = (self.drawing_keypoints[0], int((self.drawing_keypoints[1] + self.drawing_keypoints[5])/2))
+        net_end_point = (self.drawing_keypoints[2], int((self.drawing_keypoints[1] + self.drawing_keypoints[5])/2))
+        cv2.line(frame, net_start_point, net_end_point, (255, 0, 0), 2)
 
         return frame
 
@@ -154,4 +157,11 @@ class MiniCourt:
 
             output_frames.append(frame)
         return output_frames
+
+    def get_start_point_of_mini_court(self):
+        return self.court_start_x, self.court_start_y
+    def get_width_of_mini_court(self):
+        return self.court_drawing_width
+    def get_court_drawing_keypoints(self):
+        return self.drawing_keypoints
 
