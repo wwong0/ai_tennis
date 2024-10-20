@@ -1,4 +1,5 @@
 import cv2
+import subprocess
 
 def read_video(video_path):
     #video capture object allows reading of video frame by frame
@@ -15,9 +16,14 @@ def read_video(video_path):
     return frames
 
 def save_video(output_video_frames, output_video_path):
-    fourcc = cv2.VideoWriter.fourcc(*'MJPG')
+    fourcc = cv2.VideoWriter.fourcc(*'mp4v')
     #creates a videowriter obj to write the video
     out = cv2.VideoWriter(output_video_path, fourcc, 24, (output_video_frames[0].shape[1], output_video_frames[0].shape[0]))
     for frame in output_video_frames:
         out.write(frame)
     out.release()
+
+def convert_to_mp4(input_path, output_path):
+    subprocess.run([
+        'ffmpeg', '-i', input_path, '-vcodec', 'libx264', '-acodec', 'aac', output_path
+    ], check = True)

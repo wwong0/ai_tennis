@@ -3,7 +3,8 @@ from utils import (read_video,
                    save_video,
                    measure_distance,
                    convert_pixel_distance_to_meters,
-                   draw_player_stats)
+                   draw_player_stats,
+                   convert_to_mp4)
 from trackers import PlayerTracker, BallTracker
 from court_line_detector import CourtLineDetector
 from mini_court import MiniCourt
@@ -12,9 +13,13 @@ import pandas as pd
 from copy import deepcopy
 
 
-def main():
+
+
+
+
+def analyze_tennis(input_path = "input_videos/input_video.mp4" , output_path = "output_videos/output_video_converted.mp4"):
     # Read Video
-    input_video_path = "input_videos/input_video.mp4"
+    input_video_path = input_path
     video_frames = read_video(input_video_path)
 
     # Detect Players and Ball
@@ -135,7 +140,12 @@ def main():
         cv2.putText(frame, f"Frame: {i}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
 
-    save_video(output_video_frames, "output_videos/output_video.avi")
+    save_video(output_video_frames, "output_videos/output_video.mp4")
+
+    convert_to_mp4("output_videos/output_video.mp4", output_path)
+
+
+
 
 if __name__ == '__main__':
-    main()
+    analyze_tennis()

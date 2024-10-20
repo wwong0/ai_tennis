@@ -1,0 +1,29 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Tennis Analysis Tool</h1>
+    <form action="/" method="post" enctype="multipart/form-data">
+        <label for="file">Upload Tennis Match Video:</label>
+        <input type="file" id="file" name="file" accept=".mp4" required>
+        <button type="submit">Analyze</button>
+    </form>
+
+    <!-- Display the video if available -->
+    {% if video_url %}
+        <div class="video-container">
+            <h2>Analysis Video Result</h2>
+            <video width="640" height="360" controls>
+                <source src="{{ video_url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    {% endif %}
+</body>
+</html>
