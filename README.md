@@ -5,4 +5,4 @@ Locally custom trained fine tuned models for tennis ball detection and key point
 
 Uses YOLO, PyTorch, OpenCv, NumPy, Pandas, Torchvision, Pickle
 
-web interface made by me
+web interface made by me with Flask, HTML, CSS
