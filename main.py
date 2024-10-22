@@ -5,13 +5,16 @@ from utils import (read_video,
                    convert_pixel_distance_to_meters,
                    draw_player_stats,
                    convert_to_mp4,
-                   perspective_transform_detections)
+                   perspective_transform_detections,
+                   convert_detection_boxes_to_points)
 from trackers import PlayerTracker, BallTracker
 from court_line_detector import CourtLineDetector
 from mini_court import MiniCourt
 import cv2
 import pandas as pd
 from copy import deepcopy
+
+
 
 def analyze_tennis(input_path = "input_videos/input_video.mp4" , output_path = "output_videos/output_video_converted.mp4"):
     # Read Video
@@ -49,7 +52,7 @@ def analyze_tennis(input_path = "input_videos/input_video.mp4" , output_path = "
     #Convert positions to mini court positions
     player_mini_court_detections, ball_mini_court_detections = mini_court.convert_bounding_boxes_to_mini_court_coordinates(player_detections,
                                                                                                                            ball_detections,
-                                                                                                                           court_keypoints)
+                                                                                                                          court_keypoints)
 
     player_stats_data = [{
         'frame_num' : 0,
@@ -66,17 +69,24 @@ def analyze_tennis(input_path = "input_videos/input_video.mp4" , output_path = "
         'player_2_last_player_speed': 0,
     }]
 
+    player_detections_perspective_transformed = perspective_transform_detections(court_keypoints,
+                                                                                 player_detections)
+    ball_detections_perspective_transformed = perspective_transform_detections(court_keypoints,
+                                                                               ball_detections)
+
+    player_mini_court_detections, ball_mini_court_detections = convert_detection_boxes_to_points(
+        player_detections_perspective_transformed,
+        ball_detections_perspective_transformed)
+
     for ball_shot_ind in range(len(ball_shot_frames)-1):
         start_frame = ball_shot_frames[ball_shot_ind]
         end_frame = ball_shot_frames[ball_shot_ind+1]
         ball_shot_time_in_seconds = (end_frame - start_frame)/24 #24 fps
 
         #get distance covered by ball
-        distance_covered_by_ball_pixels = measure_distance(ball_mini_court_detections[start_frame][1],
+        distance_covered_by_ball_meters = measure_distance(ball_mini_court_detections[start_frame][1],
                                                            ball_mini_court_detections[end_frame][1])
-        distance_covered_by_ball_meters = convert_pixel_distance_to_meters(distance_covered_by_ball_pixels,
-                                                                           constants.DOUBLE_LINE_WIDTH,
-                                                                           mini_court.get_width_of_mini_court())
+
 
         #speed of the ball shot in km/h
         speed_of_ball_shot = distance_covered_by_ball_meters / ball_shot_time_in_seconds * 3.6
@@ -87,11 +97,9 @@ def analyze_tennis(input_path = "input_videos/input_video.mp4" , output_path = "
                                                                                                  ball_mini_court_detections[start_frame][1]))
         #opponent player speed
         opponent_player_id = 1 if player_shot_ball == 2 else 2
-        distance_covered_by_opponent_pixels = measure_distance(player_mini_court_detections[start_frame][opponent_player_id],
+        distance_covered_by_opponent_meters = measure_distance(player_mini_court_detections[start_frame][opponent_player_id],
                                                                player_mini_court_detections[end_frame][opponent_player_id])
-        distance_covered_by_opponent_meters = convert_pixel_distance_to_meters(distance_covered_by_opponent_pixels,
-                                                                               constants.DOUBLE_LINE_WIDTH,
-                                                                               mini_court.get_width_of_mini_court())
+
         speed_of_opponent = distance_covered_by_opponent_meters / speed_of_ball_shot * 3.6
 
         current_player_stats = deepcopy(player_stats_data[-1])
