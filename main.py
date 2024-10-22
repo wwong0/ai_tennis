@@ -4,18 +4,14 @@ from utils import (read_video,
                    measure_distance,
                    convert_pixel_distance_to_meters,
                    draw_player_stats,
-                   convert_to_mp4)
+                   convert_to_mp4,
+                   perspective_transform_detections)
 from trackers import PlayerTracker, BallTracker
 from court_line_detector import CourtLineDetector
 from mini_court import MiniCourt
 import cv2
 import pandas as pd
 from copy import deepcopy
-
-
-
-
-
 
 def analyze_tennis(input_path = "input_videos/input_video.mp4" , output_path = "output_videos/output_video_converted.mp4"):
     # Read Video
@@ -28,6 +24,7 @@ def analyze_tennis(input_path = "input_videos/input_video.mp4" , output_path = "
     player_detections = player_tracker.detect_frames(video_frames,
                                                      read_from_stub = True,
                                                      stub_path = 'tracker_stubs/player_detections.pkl')
+
     ball_detections = ball_tracker.detect_frames(video_frames,
                                                      read_from_stub = True,
                                                      stub_path = 'tracker_stubs/ball_detections.pkl')
@@ -39,15 +36,15 @@ def analyze_tennis(input_path = "input_videos/input_video.mp4" , output_path = "
     court_line_detector = CourtLineDetector(court_model_path)
     court_keypoints = court_line_detector.predict(video_frames[0])
 
-    #choose players
+
+    #filter 2 players
     player_detections = player_tracker.choose_and_filter_players(court_keypoints, player_detections)
 
     #Minicourt
     mini_court = MiniCourt(video_frames[0])
 
-    #detect ball shots
+    #detect ball hits
     ball_shot_frames = ball_tracker.get_ball_shot_frames(ball_detections)
-
 
     #Convert positions to mini court positions
     player_mini_court_detections, ball_mini_court_detections = mini_court.convert_bounding_boxes_to_mini_court_coordinates(player_detections,

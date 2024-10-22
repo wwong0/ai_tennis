@@ -25,5 +25,5 @@ def save_video(output_video_frames, output_video_path):
 
 def convert_to_mp4(input_path, output_path):
     subprocess.run([
-        'ffmpeg', '-i', input_path, '-vcodec', 'libx264', '-acodec', 'aac', output_path
+        'ffmpeg', '-y', '-i', input_path, '-vcodec', 'libx264', '-acodec', 'aac', output_path
     ], check = True)
