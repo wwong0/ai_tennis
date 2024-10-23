@@ -7,3 +7,5 @@ Fixed issue with perspective shift not accounted for in original video, and adde
 Locally custom trained fine tuned models for tennis ball detection and key point extraction
 
 Uses YOLO, PyTorch, OpenCv, NumPy, Pandas, Torchvision, Pickle, Flask, HTML, CSS
+
+Requires ffmpeg

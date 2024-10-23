@@ -49,10 +49,7 @@ def analyze_tennis(input_path = "input_videos/input_video.mp4" , output_path = "
     #detect ball hits
     ball_shot_frames = ball_tracker.get_ball_shot_frames(ball_detections)
 
-    #Convert positions to mini court positions
-    player_mini_court_detections, ball_mini_court_detections = mini_court.convert_bounding_boxes_to_mini_court_coordinates(player_detections,
-                                                                                                                           ball_detections,
-                                                                                                                          court_keypoints)
+
 
     player_stats_data = [{
         'frame_num' : 0,
@@ -68,7 +65,7 @@ def analyze_tennis(input_path = "input_videos/input_video.mp4" , output_path = "
         'player_2_total_player_speed': 0,
         'player_2_last_player_speed': 0,
     }]
-
+    #Convert positions to mini court positions
     player_detections_perspective_transformed = perspective_transform_detections(court_keypoints,
                                                                                  player_detections)
     ball_detections_perspective_transformed = perspective_transform_detections(court_keypoints,
@@ -123,6 +120,11 @@ def analyze_tennis(input_path = "input_videos/input_video.mp4" , output_path = "
     player_stats_data_df['player_1_average_player_speed'] = player_stats_data_df['player_1_total_player_speed']/player_stats_data_df['player_2_number_of_shots']
     player_stats_data_df['player_2_average_player_speed'] = player_stats_data_df['player_2_total_player_speed']/player_stats_data_df['player_1_number_of_shots']
 
+    #temporary fix for mini court player ball drawing
+    player_mini_court_detections, ball_mini_court_detections = mini_court.convert_bounding_boxes_to_mini_court_coordinates(
+        player_detections,
+        ball_detections,
+        court_keypoints)
 
     # Draw Output
     ## Draw Player and Ball Bounding Boxes
